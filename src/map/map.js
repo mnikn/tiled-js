@@ -2,17 +2,31 @@ import * as d3 from 'd3';
 
 class Grid {
     constructor(data = []) {
-        this.data = data;
+        this._data = data;
+        if (data.length !== 0) {
+            this._width = this.data[0].reduce((result, current) => result + current.width, 0) + 10;
+            this._height = this.data.reduce((result, current) => result + current[0].height, 0) + 10;
+        }
+    }
+
+    get data() {
+        return this._data;
     }
 
     get width() {
-        if (this.data.length === 0) return 0;
-        return this.data[0].reduce((result, current) => result + current.width, 0) + 10;
+        return this._width;
+    }
+
+    set width(value) {
+        this._width = value;
     }
 
     get height() {
-        if (this.data.length === 0) return 0;
-        return this.data.reduce((result, current) => result + current[0].height, 0) + 10;
+        return this._height;
+    }
+
+    set height(value) {
+        this._height = value;
     }
 
     get rows() {
@@ -28,6 +42,7 @@ export class Map extends HTMLElement {
 
     constructor() {
         super();
+        console.log('fhgfgh');
         this.id = 'map';
         this.initStyle();
         this.grid = this.createGrid();

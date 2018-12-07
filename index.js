@@ -1,3 +1,2 @@
-import {
-    Map
-} from './src/map';
+import './src/map/map';
+import './src/toolbar/toolbar';

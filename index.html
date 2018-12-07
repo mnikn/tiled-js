@@ -2,10 +2,22 @@
 <html>
     <head>
         <title>tiled-js</title>
+        <style>
+            body {
+                height: 100%;
+            }
+        </style>
+        <link rel="stylesheet" type="text/css" href="./semantic/dist/semantic.min.css">
+        <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="./semantic/dist/semantic.min.js"></script>
     </head>
     <body>
-        <app-map>
-        </app-map>
+        <main style="height: 100%; display: flex">
+            <tiled-toolbar>
+            </tiled-toolbar>
+            <app-map>
+            </app-map>
+        </main>
     </body>
     <script src="./dist/bundle.js"></script>
 </html>
