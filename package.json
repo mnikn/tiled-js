@@ -1,0 +1,19 @@
+{
+  "name": "tiled-js",
+  "version": "0.0.1",
+  "description": "an embedded tiled web component ",
+  "main": "index.js",
+  "author": "mnikn",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.27.1",
+    "webpack-cli": "^3.1.2"
+  },
+  "dependencies": {
+    "d3": "^5.7.0"
+  }
+}
