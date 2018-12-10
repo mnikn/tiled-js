@@ -42,15 +42,10 @@ export class Map extends HTMLElement {
 
     constructor() {
         super();
-        console.log('fhgfgh');
         this.id = 'map';
-        this.initStyle();
+        this.style.overflow = 'auto';
         this.grid = this.createGrid();
         this.refresh();
-    }
-
-    initStyle() {
-        this.style.overflow = 'auto';
     }
 
     refresh() {
@@ -70,8 +65,9 @@ export class Map extends HTMLElement {
             .attr("y", d => d.y)
             .attr("width", d => d.width)
             .attr("height", d => d.height)
-            .style("fill", "#fff")
-            .style("stroke", "#222");
+            .style("fill", "#BFBFBF")
+            .style("stroke", "#5B5B5B")
+            .style("stroke-dasharray", ("1, 3"));
     }
 
     createGrid(row = 100, column = 100) {
