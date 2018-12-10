@@ -2,6 +2,9 @@ import './workbench.css';
 import {
     GridAPI
 } from '../core/grid';
+import {
+    TileService
+} from '../tile-service';
 
 export class Workbench extends HTMLElement {
     constructor() {
@@ -18,6 +21,9 @@ export class Workbench extends HTMLElement {
         `;
         this.grid = GridAPI.createGrid('#tile-preview', {
             fillColor: 'red'
+        });
+        this.grid.registerRectsEvent('click', function() {
+            TileService.selectedTile = this;
         });
     }
 }
