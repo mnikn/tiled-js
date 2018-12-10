@@ -9,13 +9,20 @@ import {
 export class Grid {
     constructor(data = []) {
         this._data = data;
-        if (data.length !== 0) {
-            this._width = this.data[0].reduce((result, current) => result + current.width, 0) + 10;
-            this._height = this.data.reduce((result, current) => result + current[0].height, 0) + 10;
+        this.updateGrid();
+    }
+
+    updateGrid() {
+        if (this._data.length !== 0) {
+            this._width = this._data[0].reduce((result, current) => result + current.width, 0);
+            this._height = this._data.reduce((result, current) => result + current[0].height, 0);
+            this._rows = this._data.length;
+            this._columns = this._data[0].length;
         }
-        this._rects = _.flatten(this.data).map(e => _.extend({
-            events: {}
-        }, e));
+        this._rects = _.flatten(this._data).map(e => {
+            if (!e.events) e.events = [];
+            return e;
+        });
     }
 
     get data() {
@@ -39,11 +46,11 @@ export class Grid {
     }
 
     get rows() {
-        return [];
+        return this._rows;
     }
 
     get columns() {
-        return [];
+        return this._columns;
     }
 
     registerRectEvent(id, eventName, callback) {
@@ -82,6 +89,13 @@ export class Grid {
             self.fireRectEvent(rect.id, eventName, args, thisEnv);
         });
     }
+
+    // removeRect(id) {
+    //     this._data.forEach(function (row) {
+    //         row = row.filter(rect => rect.id === id);
+    //     });
+    //     this.updateGrid();
+    // }
 }
 
 let grids = [];
@@ -127,8 +141,8 @@ export class GridAPI {
         let strokeDasharray = _.get(options, 'strokeDasharray', ('0, 0'));
         let gridElement = d3.select(target)
             .append('svg')
-            .attr('height', grid.height)
-            .attr('width', grid.width);
+            .attr('height', grid.height + 2)
+            .attr('width', grid.width + 2);
         let rows = gridElement.selectAll('.row')
             .data(grid.data)
             .enter().append('g')
