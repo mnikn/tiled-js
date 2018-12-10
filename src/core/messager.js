@@ -11,7 +11,9 @@ export class Messager {
         this._queue.splice(this._queue.indexOf(callback), 1);
     }
 
-    fire(args) {
-        this._queue.forEach(e => e.apply(this, args));
+    fire(args, thisEnv = this) {
+        this._queue.forEach(function (e) {
+            e.apply(thisEnv, args);
+        });
     }
 }
