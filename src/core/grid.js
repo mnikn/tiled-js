@@ -102,6 +102,11 @@ let grids = [];
 export class GridAPI {
     static createGrid(target, options = {}, customFn = () => {}) {
         let id = _.get(options, 'id', grids.length + 1);
+        if (grids[id]) {
+            this.render(id, target, options, customFn);
+            return grids[id];
+        }
+
         let row = _.get(options, 'row', 100);
         let column = _.get(options, 'column', 100);
         let rectHeight = _.get(options, 'height', 32);
@@ -132,13 +137,16 @@ export class GridAPI {
 
     static render(id, target, options = {}, customFn = () => {}) {
         if (!target) return;
-
         let grid = grids[id];
         if (!grid) return;
 
         let fillColor = _.get(options, 'fillColor', '#BFBFBF')
         let strokeColor = _.get(options, 'strokeColor', 'black')
         let strokeDasharray = _.get(options, 'strokeDasharray', ('0, 0'));
+        let targetElement = document.querySelector(target);
+        while (targetElement.hasChildNodes()) {
+            targetElement.removeChild(targetElement.lastChild);
+        }
         let gridElement = d3.select(target)
             .append('svg')
             .attr('height', grid.height + 2)
@@ -149,17 +157,23 @@ export class GridAPI {
             .attr('class', 'row');
         let rects = rows.selectAll(".square")
             .data(d => d)
-            .enter().append("rect")
-            .attr("class", "square")
-            .attr('id', d => `square${d.id}`)
+            .enter().append('svg')
             .attr("x", d => d.x)
             .attr("y", d => d.y)
-            .attr("width", d => d.width)
-            .attr("height", d => d.height)
+            .attr('width',d => d.width)
+            .attr('height',d => d.height)
+            .attr('viewBox', d => `0 0 ${d.width} ${d.height}`)
+            .attr('preserveAspectRatio', 'xMaxYMax meet')
+            // .append('g')
+            .append("rect")
+            .attr("class", "square")
+            .attr("width", '100%')
+            .attr("height", '100%')
             .style("fill", fillColor)
             .style("stroke", strokeColor)
             .style('stroke-dasharray', strokeDasharray);
-        customFn.call(this, grid);
+        rects = rows.selectAll('svg');
+        customFn.call(this, grid, rects);
         rects.on('click', function (d) {
             grid.fireRectEvent(d.id, 'click', [d], this);
         });

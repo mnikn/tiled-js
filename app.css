@@ -1,3 +1,7 @@
 rect:hover {
     cursor: pointer;
 }
+
+text:hover {
+    cursor: pointer;
+}

@@ -15,12 +15,20 @@ export class Map extends HTMLElement {
         this.id = 'map';
         this.style.overflow = 'auto';
         this.grid = GridAPI.createGrid('#map', {
+            id: 'map-grid',
             strokeColor: '#5B5B5B',
             strokeDasharray: ('1, 3')
         });
         this.grid.registerRectsEvent('click', function () {
             if (!TileService.selectedTile) return;
-            this.style.fill = TileService.selectedTile.style.fill;
+
+            while (this.hasChildNodes()) {
+                this.removeChild(this.lastChild);
+            }
+            for(let i = 0;i < TileService.selectedTile.children.length; ++i) {
+                let node = TileService.selectedTile.children[i].cloneNode(true); 
+                this.appendChild(node);
+            }
         });
     }
 }
