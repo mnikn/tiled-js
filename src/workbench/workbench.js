@@ -64,7 +64,7 @@ export class Workbench extends HTMLElement {
         `;
         this.renderColorGrid();
         document.querySelector('#change-colortile-btn').addEventListener('click', e => {
-            TileService.selectedTile.children[0].style.fill = pickr.getColor().toRGBA().toString();
+            TileService.selectedTile.children[1].style.fill = pickr.getColor().toRGBA().toString();
         });
         document.querySelector('#change-texttile-btn').addEventListener('click', e => {
             TileService.selectedTile.children[1].innerHTML = self._customTextTileText;
@@ -116,23 +116,28 @@ export class Workbench extends HTMLElement {
     }
 
     renderColorGrid() {
-        let colorIndex = 0;
-        let colors = [
-            'red', 'green', 'yellow', 'blue', 'gray',
-            'black', 'lightblue', 'lightgray', 'aqua', 'salmon',
-            'azure', 'gold', 'silver', 'firebrick', 'hotpink',
-            'teal', 'tan', 'skyblue', 'violet', 'khaki',
-            'brown', 'saddlebrown', 'cadetblue', 'gainsboro', 'wheat',
-            'honeydew', 'tan', 'forestgreen', 'bisque', 'lawngreen'
-        ];
-        let fillColor = () => colors[colorIndex++];
         this.grid = GridAPI.createGrid('#colortile-preview', {
             id: 'color-grid',
             column: 5,
             row: 6,
             width: 40,
-            height: 40,
-            fillColor: fillColor
+            height: 40
+        }, (grid, rects) => {
+            let colorIndex = 0;
+            let colors = [
+                'red', 'green', 'yellow', 'blue', 'gray',
+                'black', 'lightblue', 'lightgray', 'aqua', 'salmon',
+                'azure', 'gold', 'silver', 'firebrick', 'hotpink',
+                'teal', 'tan', 'skyblue', 'violet', 'khaki',
+                'brown', 'saddlebrown', 'cadetblue', 'gainsboro', 'wheat',
+                'honeydew', 'tan', 'forestgreen', 'bisque', 'lawngreen'
+            ];
+            rects.data(d => d)
+                .append("rect")
+                .attr("width", '100%')
+                .attr("height", '100%')
+                .style("fill", () => colors[colorIndex++])
+                .style("stroke-width", '0');
         });
         this.grid.registerRectsEvent('click', function () {
             TileService.selectedTile = this;

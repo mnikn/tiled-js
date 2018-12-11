@@ -24,10 +24,10 @@ export class Map extends HTMLElement {
             if (!TileService.selectedTile) return;
 
             if (TileService.editMode === editMode.tile) {
-                while (this.hasChildNodes()) {
+                while (this.childElementCount > 1) {
                     this.removeChild(this.lastChild);
                 }
-                for(let i = 0;i < TileService.selectedTile.children.length; ++i) {
+                for(let i = 1;i < TileService.selectedTile.children.length; ++i) {
                     let node = TileService.selectedTile.children[i].cloneNode(true); 
                     this.appendChild(node);
                 }
