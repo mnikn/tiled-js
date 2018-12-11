@@ -6,7 +6,8 @@ import {
     GridAPI
 } from '../core/grid';
 import {
-    TileService
+    TileService,
+    editMode
 } from '../tile-service';
 
 export class Workbench extends HTMLElement {
@@ -135,6 +136,7 @@ export class Workbench extends HTMLElement {
         });
         this.grid.registerRectsEvent('click', function () {
             TileService.selectedTile = this;
+            TileService.editMode = editMode.tile;
         });
     }
 
@@ -163,6 +165,7 @@ export class Workbench extends HTMLElement {
         });
         this.grid.registerRectsEvent('click', function () {
             TileService.selectedTile = this;
+            TileService.editMode = editMode.tile;
         });
     }
 }

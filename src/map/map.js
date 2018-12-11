@@ -5,6 +5,7 @@ import {
     GridAPI
 } from '../core/grid';
 import {
+    editMode,
     TileService
 } from '../tile-service';
 
@@ -22,12 +23,19 @@ export class Map extends HTMLElement {
         this.grid.registerRectsEvent('click', function () {
             if (!TileService.selectedTile) return;
 
-            while (this.hasChildNodes()) {
-                this.removeChild(this.lastChild);
-            }
-            for(let i = 0;i < TileService.selectedTile.children.length; ++i) {
-                let node = TileService.selectedTile.children[i].cloneNode(true); 
-                this.appendChild(node);
+            if (TileService.editMode === editMode.tile) {
+                while (this.hasChildNodes()) {
+                    this.removeChild(this.lastChild);
+                }
+                for(let i = 0;i < TileService.selectedTile.children.length; ++i) {
+                    let node = TileService.selectedTile.children[i].cloneNode(true); 
+                    this.appendChild(node);
+                }
+            } else if (TileService.editMode === editMode.eraser) {
+                while (this.childElementCount > 1) {
+                    this.removeChild(this.lastChild);
+                }
+                this.children[0].style.fill = '#BFBFBF';
             }
         });
     }
