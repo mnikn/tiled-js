@@ -12,6 +12,20 @@ import {
 export class Workbench extends HTMLElement {
     constructor() {
         super();
+        let self = this;
+        this._customTextTileText = 'W';
+        let textinputPopup = `
+        <div class='ui form'>
+            <div class='field'><label>Custom text</label>
+                <textarea id='texttitle-textarea' rows='2'></textarea>
+            </div>
+            <button id='texttitle-input-okbtn' class='ui green button'>
+                Ok
+            </button>
+            <button class='ui deny button'>
+                Cancel
+            </button>
+        </div>`;
         this.innerHTML = `
         <div class="ui left vertical segment" style="height: 100%; padding: 12px;">
             <div class="ui attached tabular menu" style="margin-top: 12px">
@@ -36,6 +50,9 @@ export class Workbench extends HTMLElement {
                 <div id="texttile-preview">
                 </div>
                 <div style="margin-top: 12px">
+                    <div id="texttile-input" style="display: inline;" data-html="${textinputPopup}">
+                        W
+                    </div>
                     <button id="change-texttile-btn" class="ui circular icon button">
                         <i class="paste icon"></i>
                     </button>
@@ -45,10 +62,13 @@ export class Workbench extends HTMLElement {
         `;
         this.renderColorGrid();
         document.querySelector('#change-colortile-btn').addEventListener('click', e => {
-            TileService.selectedTile.style.fill = pickr.getColor().toRGBA().toString();
+            TileService.selectedTile.children[0].style.fill = pickr.getColor().toRGBA().toString();
+        });
+        document.querySelector('#change-texttile-btn').addEventListener('click', e => {
+            TileService.selectedTile.children[1].innerHTML = self._customTextTileText;
         });
 
-        let self = this;
+
         $('.menu .item').tab({
             onLoad: function () {
                 if (this.id === 'text-tab') {
@@ -56,6 +76,20 @@ export class Workbench extends HTMLElement {
                 } else if (this.id === 'color-tab') {
                     self.renderColorGrid();
                 }
+            }
+        });
+        $('#texttile-input').popup({
+            position: 'bottom left',
+            on: 'click',
+            onVisible: () => {
+                let btn = document.querySelector('#texttitle-input-okbtn');
+                let textarea = document.querySelector('#texttitle-textarea');
+                textarea.value = self._customTextTileText;
+                btn.addEventListener('click', e => {
+                    self._customTextTileText = textarea.value;
+                    document.querySelector('#texttile-input').innerText = textarea.value;
+                    // document.querySelector('.popup').remove();
+                });
             }
         });
         const pickr = new Pickr({
@@ -85,13 +119,15 @@ export class Workbench extends HTMLElement {
             'red', 'green', 'yellow', 'blue', 'gray',
             'black', 'lightblue', 'lightgray', 'aqua', 'salmon',
             'azure', 'gold', 'silver', 'firebrick', 'hotpink',
-            'teal', 'tan', 'skyblue', 'violet', 'khaki'
+            'teal', 'tan', 'skyblue', 'violet', 'khaki',
+            'brown', 'saddlebrown', 'cadetblue', 'gainsboro', 'wheat',
+            'honeydew', 'tan', 'forestgreen', 'bisque', 'lawngreen'
         ];
         let fillColor = () => colors[colorIndex++];
         this.grid = GridAPI.createGrid('#colortile-preview', {
             id: 'color-grid',
-            column: 4,
-            row: 4,
+            column: 5,
+            row: 6,
             width: 40,
             height: 40,
             fillColor: fillColor
@@ -104,8 +140,8 @@ export class Workbench extends HTMLElement {
     renderTextGrid() {
         this.grid = GridAPI.createGrid('#texttile-preview', {
             id: 'text-grid',
-            column: 4,
-            row: 4,
+            column: 5,
+            row: 6,
             width: 40,
             height: 40
         }, (grid, rects) => {
@@ -114,17 +150,18 @@ export class Workbench extends HTMLElement {
                 'A', 'B', 'C', 'D', 'E',
                 'F', 'G', 'H', 'I', 'J',
                 'K', 'L', 'M', 'N', 'O',
-                'P', 'Q', 'R', 'S', 'R'
+                'P', 'Q', 'R', 'S', 'T',
+                'U', 'V', 'W', 'X', 'Y',
+                'Y'
             ];
             rects.data(d => d)
-            .append("text")
-            .attr("x", '40%')
-            .attr("y", '60%')
-            .text(() => texts[textIndex++]);
+                .append("text")
+                .attr("x", '40%')
+                .attr("y", '60%')
+                .text(() => texts[textIndex++]);
         });
         this.grid.registerRectsEvent('click', function () {
             TileService.selectedTile = this;
-            console.log(this);
         });
     }
 }

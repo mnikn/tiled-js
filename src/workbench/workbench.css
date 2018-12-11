@@ -1,3 +1,10 @@
 #tile-preview {
     overflow: auto;
 }
+
+#texttile-input {
+    margin: 4px;
+}
+#texttile-input:hover {
+    cursor: pointer;
+}
