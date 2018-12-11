@@ -160,8 +160,8 @@ export class GridAPI {
             .enter().append('svg')
             .attr("x", d => d.x)
             .attr("y", d => d.y)
-            .attr('width',d => d.width)
-            .attr('height',d => d.height)
+            .attr('width', d => d.width)
+            .attr('height', d => d.height)
             .attr('viewBox', d => `0 0 ${d.width} ${d.height}`)
             .attr('preserveAspectRatio', 'xMaxYMax meet')
             // .append('g')
@@ -176,6 +176,10 @@ export class GridAPI {
         customFn.call(this, grid, rects);
         rects.on('click', function (d) {
             grid.fireRectEvent(d.id, 'click', [d], this);
+        }).on('mousedown', function (d) {
+            grid.fireRectEvent(d.id, 'mousedown', [d], this);
+        }).on('mouseover', function (d) {
+            grid.fireRectEvent(d.id, 'mouseover', [d], this);
         });
     }
 }

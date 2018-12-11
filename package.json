@@ -1,7 +1,7 @@
 {
   "name": "tiled-js",
   "version": "0.0.1",
-  "description": "an embedded tiled web component ",
+  "description": "an embedded tiled web component",
   "main": "index.js",
   "author": "mnikn",
   "license": "MIT",
