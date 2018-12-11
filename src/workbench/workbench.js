@@ -28,7 +28,8 @@ export class Workbench extends HTMLElement {
         </div>`;
         this.innerHTML = `
         <div class="ui left vertical segment" style="height: 100%; padding: 12px;">
-            <div class="ui attached tabular menu" style="margin-top: 12px">
+            <div class="ui attached tabular menu" style="margin-top: 12px; 
+            display: flex; flex-direction: row; flex-wrap: wrap;">
                 <a class="active item" data-tab="color-tileset">Color tileset</a>
                 <a class="item" data-tab="text-tileset">Text tileset</a>
                 <a class="item" data-tab="add-tileset">
@@ -38,10 +39,10 @@ export class Workbench extends HTMLElement {
             <div id='color-tab' class="ui attached active tab segment" data-tab="color-tileset">
                 <div id="colortile-preview">
                 </div>
-                <div style="margin-top: 12px">
+                <div style="margin-top: 12px; display: flex">
                     <div class="color-picker">
                     </div>
-                    <button id="change-colortile-btn" class="ui circular icon button">
+                    <button id="change-colortile-btn" class="ui circular icon button" style="margin-left: 4px">
                         <i class="paste icon"></i>
                     </button>
                 </div>
