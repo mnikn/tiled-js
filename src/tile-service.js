@@ -27,24 +27,24 @@ export class FillShapeMode extends EditMode {
 
     constructor() {
         super();
-        this._startPoint = null;
-        this._endPoint = null;
+        this._startRect = null;
+        this._endRect = null;
     }
 
-    get startPoint() {
-        return this._startPoint;
+    get startRect() {
+        return this._startRect;
     }
 
-    set startPoint(value) {
-        this._startPoint = value;
+    set startRect(value) {
+        this._startRect = value;
     }
 
-    get endPoint() {
-        return this._endPoint;
+    get endRect() {
+        return this._endRect;
     }
 
-    set endPoint(value) {
-        this._endPoint = value;
+    set endRect(value) {
+        this._endRect = value;
     }
 
     get type() {

@@ -119,6 +119,8 @@ export class GridAPI {
             data[i] = [];
             for (let j = 0; j < column; ++j) {
                 data[i].push({
+                    row: i,
+                    column: j,
                     x: xpos,
                     y: ypos,
                     height: rectHeight,
@@ -158,6 +160,7 @@ export class GridAPI {
         let rects = rows.selectAll(".square")
             .data(d => d)
             .enter().append('svg')
+            .attr('id', d => `${id.split('-').join('')}-${d.row}-${d.column}`)
             .attr("x", d => d.x)
             .attr("y", d => d.y)
             .attr('width', d => d.width)
@@ -181,5 +184,9 @@ export class GridAPI {
         }).on('mouseover', function (d) {
             grid.fireRectEvent(d.id, 'mouseover', [d], this);
         });
+    }
+
+    static getGrid(id) {
+        return grids[id];
     }
 }

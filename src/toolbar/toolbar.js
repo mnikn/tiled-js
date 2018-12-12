@@ -19,10 +19,10 @@ export class Toolbar extends HTMLElement {
         </div>
         `;
         document.querySelector('#eraser-btn').addEventListener('click', e => {
-            TileService.editMode = TileService.editMode.type === editMode.eraser ? null : new EraserMode();
+            TileService.editMode = TileService.editMode !== null && TileService.editMode.type === editMode.eraser ? null : new EraserMode();
         });
         document.querySelector('#fill-shape-btn').addEventListener('click', e => {
-            TileService.editMode = TileService.editMode.type === editMode.fillShape ? null : new FillShapeMode();
+            TileService.editMode = TileService.editMode !== null && TileService.editMode.type === editMode.fillShape ? null : new FillShapeMode();
         });
     }
 }
