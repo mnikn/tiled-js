@@ -7,7 +7,7 @@ import {
 } from '../core/grid';
 import {
     TileService,
-    editMode
+    TileMode
 } from '../tile-service';
 
 export class Workbench extends HTMLElement {
@@ -141,7 +141,7 @@ export class Workbench extends HTMLElement {
         });
         this.grid.registerRectsEvent('click', function () {
             TileService.selectedTile = this;
-            TileService.editMode = editMode.tile;
+            TileService.editMode = new TileMode();
         });
     }
 
@@ -170,7 +170,7 @@ export class Workbench extends HTMLElement {
         });
         this.grid.registerRectsEvent('click', function () {
             TileService.selectedTile = this;
-            TileService.editMode = editMode.tile;
+            TileService.editMode = new TileMode();
         });
     }
 }

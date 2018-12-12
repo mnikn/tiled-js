@@ -1,6 +1,8 @@
 import {
     editMode,
-    TileService
+    FillShapeMode,
+    TileService,
+    EraserMode
 } from '../tile-service';
 
 export class Toolbar extends HTMLElement {
@@ -11,10 +13,16 @@ export class Toolbar extends HTMLElement {
             <a id='eraser-btn' class="item">
                 <i class="eraser icon"></i> 
             </a>
+            <a id='fill-shape-btn' class='item'>
+                <i class='square icon'></i>
+            </a>
         </div>
         `;
         document.querySelector('#eraser-btn').addEventListener('click', e => {
-            TileService.editMode = TileService.editMode === editMode.eraser ? '' : editMode.eraser;
+            TileService.editMode = TileService.editMode.type === editMode.eraser ? null : new EraserMode();
+        });
+        document.querySelector('#fill-shape-btn').addEventListener('click', e => {
+            TileService.editMode = TileService.editMode.type === editMode.fillShape ? null : new FillShapeMode();
         });
     }
 }

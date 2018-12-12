@@ -33,7 +33,7 @@ export class Map extends HTMLElement {
         if (!TileService.selectedTile) return;
         if (d3.event.buttons !== 1) return;
 
-        if (TileService.editMode === editMode.tile) {
+        if (TileService.editMode.type === editMode.tile) {
             while (this.childElementCount > 1) {
                 this.removeChild(this.lastChild);
             }
@@ -41,11 +41,15 @@ export class Map extends HTMLElement {
                 let node = TileService.selectedTile.children[i].cloneNode(true);
                 this.appendChild(node);
             }
-        } else if (TileService.editMode === editMode.eraser) {
+        } else if (TileService.editMode.type === editMode.eraser) {
             while (this.childElementCount > 1) {
                 this.removeChild(this.lastChild);
             }
             this.children[0].style.fill = '#BFBFBF';
+        } else if (TileService.editMode.type === editMode.fillShape) {
+            if (!TileService.editMode.startPoint) {
+                TileService.editMode.startPoint = null;
+            }
         }
     }
 }
