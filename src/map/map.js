@@ -5,6 +5,9 @@ import {
     GridAPI
 } from '../core/grid';
 import {
+    RectangleSelection, SimpleSelection
+} from '../core/selection';
+import {
     editMode,
     TileService
 } from '../tile-service';
@@ -22,54 +25,81 @@ export class Map extends HTMLElement {
             strokeDasharray: ('1, 3')
         });
         this.grid.registerRectsEvent('mouseover', function (rectData) {
-            self.paintTile.call(this, rectData);
+            self.paintTile(rectData, this);
         });
         this.grid.registerRectsEvent('mousedown', function (rectData) {
-            self.paintTile.call(this, rectData);
+            self.paintTile(rectData, this);
         });
     }
 
-    paintTile(rectData) {
-        if (!TileService.selectedTile && !TileService.editMode) return;
+    paintTile(rectData, rectElement) {
+        if (!TileService.editMode) return;
         if (d3.event.buttons !== 1) return;
-        
-        if (TileService.editMode.type === editMode.tile) {
-            while (this.childElementCount > 1) {
-                this.removeChild(this.lastChild);
-            }
-            for (let i = 1; i < TileService.selectedTile.children.length; ++i) {
-                let node = TileService.selectedTile.children[i].cloneNode(true);
-                this.appendChild(node);
-            }
-        } else if (TileService.editMode.type === editMode.eraser) {
-            while (this.childElementCount > 1) {
-                this.removeChild(this.lastChild);
-            }
-            this.children[0].style.fill = '#BFBFBF';
-        } else if (TileService.editMode.type === editMode.fillShape) {
-            if (!TileService.editMode.startRect) {
-                TileService.editMode.startRect = rectData;
+
+        let selectedTile = TileService.selection.selectedTile;
+
+        if (d3.event.shiftKey) {
+            if (TileService.selection.type === 'simple') {
+                TileService.selection = new RectangleSelection();
+                TileService.selection.selectedTile = selectedTile;
+                TileService.selection.startRect = rectData;
+                return;
+            } else if (TileService.selection.type === 'rectangle' && !TileService.selection.startRect) {
+                TileService.selection.startRect = rectData;
                 return;
             }
-        
-            let endRect = rectData;
-            let startRect = TileService.editMode.startRect;
-            _.range(Math.min(startRect.row, endRect.row), Math.max(startRect.row, endRect.row) + 1).forEach(row => {
-                _.range(Math.min(startRect.column, endRect.column), Math.max(startRect.column, endRect.column) + 1).forEach(column => {
+        } else {
+            if (TileService.selection.type !== 'simple') {
+                TileService.selection = new SimpleSelection();
+                TileService.selection.selectedTitle = selectedTile;
+            }
+            TileService.selection.selectedRect = rectData;
+        }
+
+        if (selectedTile && TileService.editMode.type === editMode.tile) {
+            let fillTile = (rectElement) => {
+                while (rectElement.childElementCount > 1) {
+                    rectElement.removeChild(rectElement.lastChild);
+                }
+                for (let i = 1; i < selectedTile.children.length; ++i) {
+                    let node = selectedTile.children[i].cloneNode(true);
+                    rectElement.appendChild(node);
+                }
+            };
+            if (d3.event.shiftKey === true && TileService.selection.startRect) {
+                this.onRectangleSelection(rectData, (row, column) => {
+                    let rect = document.querySelector(`#mapgrid-${row}-${column}`);
+                    fillTile(rect);
+                })
+                TileService.selection.startRect = null;
+            } else {
+                fillTile(rectElement);
+            }
+        } else if (TileService.editMode.type === editMode.eraser) {
+            if (d3.event.shiftKey === true && TileService.selection.startRect) {
+                this.onRectangleSelection(rectData, (row, column) => {
                     let rect = document.querySelector(`#mapgrid-${row}-${column}`);
                     while (rect.childElementCount > 1) {
                         rect.removeChild(rect.lastChild);
                     }
-                    for (let i = 1; i < TileService.selectedTile.children.length; ++i) {
-                        let node = TileService.selectedTile.children[i].cloneNode(true);
-                        rect.appendChild(node);
-                    }
-                });
-
-            })
-            TileService.editMode.startRect = null;
-            // let 
+                })
+                TileService.selection.startRect = null;
+            } else {
+                while (rectElement.childElementCount > 1) {
+                    rectElement.removeChild(rectElement.lastChild);
+                }
+            }
         }
+    }
+
+    onRectangleSelection(selectRectData, callback) {
+        let endRect = selectRectData;
+        let startRect = TileService.selection.startRect;
+        _.range(Math.min(startRect.row, endRect.row), Math.max(startRect.row, endRect.row) + 1).forEach(row => {
+            _.range(Math.min(startRect.column, endRect.column), Math.max(startRect.column, endRect.column) + 1).forEach(column => {
+                callback(row, column);
+            });
+        })
     }
 }
 

@@ -1,3 +1,5 @@
+import { Selection, SimpleSelection } from "./core/selection";
+
 export class EditMode {
     constructor() {
     }
@@ -23,50 +25,20 @@ export class EraserMode extends EditMode {
     }
 }
 
-export class FillShapeMode extends EditMode {
-
-    constructor() {
-        super();
-        this._startRect = null;
-        this._endRect = null;
-    }
-
-    get startRect() {
-        return this._startRect;
-    }
-
-    set startRect(value) {
-        this._startRect = value;
-    }
-
-    get endRect() {
-        return this._endRect;
-    }
-
-    set endRect(value) {
-        this._endRect = value;
-    }
-
-    get type() {
-        return 'fillShape';
-    }
-}
-
 export const editMode = Object.freeze({
     eraser: new EraserMode().type,
-    fillShape: new FillShapeMode().type,
     tile: new TileMode().type
 });
 
-let _selectedRect = null;
 let _editMode = new EditMode();
+let _selection = new SimpleSelection();
 export class TileService {
-    static get selectedTile() {
-        return _selectedRect;
+    static get selection() {
+        return _selection;
     }
 
-    static set selectedTile(rect) {
-        _selectedRect = rect;
+    static set selection(value) {
+        _selection = value;
     }
 
     static get editMode() {

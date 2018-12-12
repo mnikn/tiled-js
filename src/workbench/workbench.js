@@ -64,10 +64,10 @@ export class Workbench extends HTMLElement {
         `;
         this.renderColorGrid();
         document.querySelector('#change-colortile-btn').addEventListener('click', e => {
-            TileService.selectedTile.children[1].style.fill = pickr.getColor().toRGBA().toString();
+            TileService.selection.selectedTile.children[1].style.fill = pickr.getColor().toRGBA().toString();
         });
         document.querySelector('#change-texttile-btn').addEventListener('click', e => {
-            TileService.selectedTile.children[1].innerHTML = self._customTextTileText;
+            TileService.selection.selectedTile.children[1].innerHTML = self._customTextTileText;
         });
 
 
@@ -140,7 +140,7 @@ export class Workbench extends HTMLElement {
                 .style("stroke-width", '0');
         });
         this.grid.registerRectsEvent('click', function () {
-            TileService.selectedTile = this;
+            TileService.selection.selectedTile = this;
             TileService.editMode = new TileMode();
         });
     }
@@ -169,7 +169,7 @@ export class Workbench extends HTMLElement {
                 .text(() => texts[textIndex++]);
         });
         this.grid.registerRectsEvent('click', function () {
-            TileService.selectedTile = this;
+            TileService.selection.selectedTile = this;
             TileService.editMode = new TileMode();
         });
     }
