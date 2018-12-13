@@ -167,14 +167,14 @@ export class GridAPI {
             .attr('height', d => d.height)
             .attr('viewBox', d => `0 0 ${d.width} ${d.height}`)
             .attr('preserveAspectRatio', 'xMaxYMax meet')
+            .style("stroke", strokeColor)
+            .style('stroke-dasharray', strokeDasharray)
             // .append('g')
             .append("rect")
             .attr("class", "square")
             .attr("width", '100%')
             .attr("height", '100%')
-            .style("fill", fillColor)
-            .style("stroke", strokeColor)
-            .style('stroke-dasharray', strokeDasharray);
+            .style("fill", fillColor);
         rects = rows.selectAll('svg');
         customFn.call(this, grid, rects);
         rects.on('click', function (d) {

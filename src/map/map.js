@@ -14,6 +14,7 @@ import {
     FillMode,
     EraserMode
 } from '../tile-service';
+import { twinkle } from '../core/animation';
 
 export class Map extends HTMLElement {
 
@@ -21,6 +22,7 @@ export class Map extends HTMLElement {
         super();
         let self = this;
         this.id = 'map';
+        this._twinkleAnimation = null;
         this.style.overflow = 'auto';
         this.grid = GridAPI.createGrid('#map', {
             id: 'mapgrid',
@@ -49,6 +51,7 @@ export class Map extends HTMLElement {
                 return;
             } else if (TileService.selection.type === 'rectangle' && !TileService.selection.startRect) {
                 TileService.selection.startRect = rectData;
+                this._twinkleAnimation = twinkle(rectElement);
                 return;
             }
         } else {
@@ -59,6 +62,9 @@ export class Map extends HTMLElement {
             TileService.selection.selectedRect = rectData;
         }
 
+        if (this._twinkleAnimation) {
+            this._twinkleAnimation.cancel();
+        }
         if (d3.event.shiftKey && TileService.selection.type === RectangleSelection.type && TileService.selection.startRect) {
             let endRect = rectData;
             let startRect = TileService.selection.startRect;

@@ -8,12 +8,14 @@ import {
 import {
     TileService
 } from '../tile-service';
+import { twinkle } from '../core/animation';
 
 export class Workbench extends HTMLElement {
     constructor() {
         super();
         let self = this;
         this._customTextTileText = 'W';
+        this._twinkleAnimate = null;
         let textinputPopup = `
         <div class='ui form'>
             <div class='field'><label>Custom text</label>
@@ -115,6 +117,7 @@ export class Workbench extends HTMLElement {
     }
 
     renderColorGrid() {
+        let self = this;
         this.grid = GridAPI.createGrid('#colortile-preview', {
             id: 'color-grid',
             column: 5,
@@ -135,11 +138,15 @@ export class Workbench extends HTMLElement {
                 .append("rect")
                 .attr("width", '100%')
                 .attr("height", '100%')
-                .style("fill", () => colors[colorIndex++])
-                .style("stroke-width", '0');
+                .style("fill", () => colors[colorIndex++]);
+                // .style("stroke-width", '0');
         });
         this.grid.registerRectsEvent('click', function () {
+            if (self._twinkleAnimate) {
+                self._twinkleAnimate.cancel();
+            }
             TileService.selection.selectedTile = this;
+            self._twinkleAnimate = twinkle(this);
         });
     }
 
@@ -167,7 +174,11 @@ export class Workbench extends HTMLElement {
                 .text(() => texts[textIndex++]);
         });
         this.grid.registerRectsEvent('click', function () {
+            if (self._twinkleAnimate) {
+                self._twinkleAnimate.cancel();
+            }
             TileService.selection.selectedTile = this;
+            self._twinkleAnimate = twinkle(this);
         });
     }
 }
