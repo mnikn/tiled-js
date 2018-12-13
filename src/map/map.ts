@@ -1,3 +1,5 @@
+import { Selection } from './../core/selection';
+import { Grid } from './../core/grid';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 
@@ -9,35 +11,33 @@ import {
     SimpleSelection
 } from '../core/selection';
 import {
-    editMode,
-    TileService,
-    FillMode,
-    EraserMode
+    TileService, EditMode
 } from '../tile-service';
 import { twinkle } from '../core/animation';
 
 export class Map extends HTMLElement {
+    private _twinkleAnimation: any;
+    private grid: Grid;
 
     constructor() {
         super();
         let self = this;
         this.id = 'map';
-        this._twinkleAnimation = null;
         this.style.overflow = 'auto';
         this.grid = GridAPI.createGrid('#map', {
             id: 'mapgrid',
             strokeColor: '#5B5B5B',
             strokeDasharray: ('1, 3')
         });
-        this.grid.registerRectsEvent('mouseover', function (rectData) {
-            self.paintTile(rectData, this);
+        this.grid.registerGridEvent('mouseover', function (cellData) {
+            self.paintTile(cellData, this);
         });
-        this.grid.registerRectsEvent('mousedown', function (rectData) {
-            self.paintTile(rectData, this);
+        this.grid.registerGridEvent('mousedown', function (cellData) {
+            self.paintTile(cellData, this);
         });
     }
 
-    paintTile(rectData, rectElement) {
+    paintTile(cellData, cellElement) {
         if (!TileService.editMode) return;
         if (d3.event.buttons !== 1) return;
 
@@ -45,28 +45,29 @@ export class Map extends HTMLElement {
 
         if (d3.event.shiftKey) {
             if (TileService.selection.type === 'simple') {
-                TileService.selection = new RectangleSelection();
-                TileService.selection.selectedTile = selectedTile;
-                TileService.selection.startRect = rectData;
+                let selection = new RectangleSelection();
+                selection.selectedTile = selectedTile;
+                selection.startRect = cellData;
+                TileService.selection = selection;
                 return;
-            } else if (TileService.selection.type === 'rectangle' && !TileService.selection.startRect) {
-                TileService.selection.startRect = rectData;
-                this._twinkleAnimation = twinkle(rectElement);
+            } else if (TileService.selection instanceof RectangleSelection && !TileService.selection.startRect) {
+                TileService.selection.startRect = cellData;
+                this._twinkleAnimation = twinkle(cellElement);
                 return;
             }
         } else {
-            if (TileService.selection.type !== 'simple') {
+            if (!(TileService.selection instanceof SimpleSelection)) {
                 TileService.selection = new SimpleSelection();
-                TileService.selection.selectedTitle = selectedTile;
+                TileService.selection.selectedTile = selectedTile;
             }
-            TileService.selection.selectedRect = rectData;
+            (<SimpleSelection>TileService.selection).selectedRect = cellData;
         }
 
         if (this._twinkleAnimation) {
             this._twinkleAnimation.cancel();
         }
-        if (d3.event.shiftKey && TileService.selection.type === RectangleSelection.type && TileService.selection.startRect) {
-            let endRect = rectData;
+        if (d3.event.shiftKey && TileService.selection instanceof RectangleSelection && TileService.selection.startRect) {
+            let endRect = cellData;
             let startRect = TileService.selection.startRect;
             let rects = TileService.selection.select(
                 Math.min(startRect.row, endRect.row),
@@ -74,24 +75,24 @@ export class Map extends HTMLElement {
                 Math.min(startRect.column, endRect.column),
                 Math.max(startRect.column, endRect.column),
                 'mapgrid');
-            switch (TileService.editMode.type) {
-                case FillMode.type:
+            switch (TileService.editMode) {
+                case EditMode.fill:
                     if (!selectedTile) break;
                     rects.forEach(e => this.fillTile(e, selectedTile));
                     break;
-                case EraserMode.type:
+                case EditMode.eraser:
                     rects.forEach(e => this.eraseTile(e));
                     break;
             }
             TileService.selection.startRect = null;
         } else {
-            switch (TileService.editMode.type) {
-                case FillMode.type:
+            switch (TileService.editMode) {
+                case EditMode.fill:
                     if (!selectedTile) break;
-                    this.fillTile(rectElement, selectedTile);
+                    this.fillTile(cellElement, selectedTile);
                     break;
-                case EraserMode.type:
-                    this.eraseTile(rectElement);
+                case EditMode.eraser:
+                    this.eraseTile(cellElement);
                     break;
             }
         }

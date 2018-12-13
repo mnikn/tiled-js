@@ -1,38 +1,38 @@
+import { Cell } from './grid';
 import {
     Messager
 } from "./messager";
+import * as _ from 'lodash';
 
 export class Selection {
-    constructor() {
-        this._selectedTitle = null;
-        this._onSelectionChange = new Messager();
-    }
+    private _selectedTile: any;
+    private _onSelectionChange = new Messager();
 
-    get type() {
+    get type(): string {
         return '';
     }
 
-    registerSelectionChange(callback) {
+    registerSelectionChange(callback): void {
         this._onSelectionChange.register(callback);
     }
 
-    fireSelectionChange(args) {
+    fireSelectionChange(args): void {
         this._onSelectionChange.fire(args);
     }
 
-    get selectedTitle() {
-        return this._selectedTitle;
+    get selectedTile() {
+        return this._selectedTile;
     }
 
-    set selectedTitle(value) {
-        this._selectedTitle = value;
+    set selectedTile(value) {
+        this._selectedTile = value;
     }
 }
 
 export class SimpleSelection extends Selection {
+    private _selectedRect: any;
     constructor() {
         super();
-        this._selectedRect = null;
     }
 
     get selectedRect() {
@@ -44,28 +44,24 @@ export class SimpleSelection extends Selection {
         super.fireSelectionChange(value);
     }
 
-    get type() {
+    get type(): string {
         return 'simple';
     }
 
-    static get type() {
+    static get type(): string {
         return 'simple';
     }
 }
 
 export class RectangleSelection extends Selection {
+    private _startRect: any;
+    private _endRect: any;
 
-    constructor() {
-        super();
-        this._startRect = null;
-        this._endRect = null;
-    }
-
-    static get type() {
+    static get type(): string {
         return 'rectangle';
     }
 
-    get type() {
+    get type(): string {
         return 'rectangle';
     }
 
@@ -86,7 +82,7 @@ export class RectangleSelection extends Selection {
         super.fireSelectionChange(value);
     }
 
-    select(leftRow, rightRow, leftColumn, rightColumn, gridId) {
+    select(leftRow: number, rightRow: number, leftColumn: number, rightColumn: number, gridId: string): Cell[] {
         let rects = [];
         _.range(leftRow, rightRow + 1).forEach(row => {
             _.range(leftColumn, rightColumn + 1).forEach(column => {

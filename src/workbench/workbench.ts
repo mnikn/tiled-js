@@ -1,3 +1,6 @@
+declare let $;
+
+import { Grid } from './../core/grid';
 import * as d3 from 'd3';
 import * as Pickr from 'pickr-widget';
 
@@ -11,6 +14,9 @@ import {
 import { twinkle } from '../core/animation';
 
 export class Workbench extends HTMLElement {
+    private _customTextTileText = 'W';
+    private _twinkleAnimate: any;
+    private grid: Grid;
     constructor() {
         super();
         let self = this;
@@ -86,11 +92,12 @@ export class Workbench extends HTMLElement {
             on: 'click',
             onVisible: () => {
                 let btn = document.querySelector('#texttitle-input-okbtn');
-                let textarea = document.querySelector('#texttitle-textarea');
+                let textarea: any = document.querySelector('#texttitle-textarea');
                 textarea.value = self._customTextTileText;
                 btn.addEventListener('click', e => {
                     self._customTextTileText = textarea.value;
-                    document.querySelector('#texttile-input').innerText = textarea.value;
+                    let element: any = document.querySelector('#texttile-input');
+                    element.innerText = textarea.value;
                     // document.querySelector('.popup').remove();
                 });
             }
@@ -124,7 +131,7 @@ export class Workbench extends HTMLElement {
             row: 6,
             width: 40,
             height: 40
-        }, (grid, rects) => {
+        }, (grid, cells) => {
             let colorIndex = 0;
             let colors = [
                 'red', 'green', 'yellow', 'blue', 'gray',
@@ -134,14 +141,14 @@ export class Workbench extends HTMLElement {
                 'brown', 'saddlebrown', 'cadetblue', 'gainsboro', 'wheat',
                 'honeydew', 'tan', 'forestgreen', 'bisque', 'lawngreen'
             ];
-            rects.data(d => d)
+            cells.data(d => d)
                 .append("rect")
                 .attr("width", '100%')
                 .attr("height", '100%')
                 .style("fill", () => colors[colorIndex++]);
                 // .style("stroke-width", '0');
         });
-        this.grid.registerRectsEvent('click', function () {
+        this.grid.registerGridEvent('click', function () {
             if (self._twinkleAnimate) {
                 self._twinkleAnimate.cancel();
             }
@@ -157,7 +164,7 @@ export class Workbench extends HTMLElement {
             row: 6,
             width: 40,
             height: 40
-        }, (grid, rects) => {
+        }, (grid, cells) => {
             let textIndex = 0;
             let texts = [
                 'A', 'B', 'C', 'D', 'E',
@@ -167,13 +174,14 @@ export class Workbench extends HTMLElement {
                 'U', 'V', 'W', 'X', 'Y',
                 'Y'
             ];
-            rects.data(d => d)
+            cells.data(d => d)
                 .append("text")
                 .attr("x", '40%')
                 .attr("y", '60%')
                 .text(() => texts[textIndex++]);
         });
-        this.grid.registerRectsEvent('click', function () {
+        let self = this;
+        this.grid.registerGridEvent('click', function () {
             if (self._twinkleAnimate) {
                 self._twinkleAnimate.cancel();
             }

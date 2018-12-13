@@ -1,8 +1,6 @@
 import {
-    editMode,
     TileService,
-    EraserMode,
-    FillMode
+    EditMode
 } from '../tile-service';
 
 export class Toolbar extends HTMLElement {
@@ -19,7 +17,7 @@ export class Toolbar extends HTMLElement {
         </div>
         `;
         document.querySelector('#eraser-btn').addEventListener('click', e => {
-            TileService.editMode = TileService.editMode !== null && TileService.editMode.type === editMode.eraser ? null : new EraserMode();
+            TileService.editMode = TileService.editMode !== EditMode.eraser ? EditMode.eraser : EditMode.none;
             let children = document.querySelector('#tiled-toolbar').children;
             for(let i = 0;i < children.length; ++i) {
                 if (children[i].id === 'eraser-btn' && children[i].className !== 'active item') {
@@ -30,7 +28,7 @@ export class Toolbar extends HTMLElement {
             }
         });
         document.querySelector('#fill-btn').addEventListener('click', e => {
-            TileService.editMode = TileService.editMode !== null && TileService.editMode.type === editMode.fill ? null : new FillMode();
+            TileService.editMode = TileService.editMode !== EditMode.fill ? EditMode.fill : EditMode.none;
             let children = document.querySelector('#tiled-toolbar').children;
             for(let i = 0;i < children.length; ++i) {
                 if (children[i].id === 'fill-btn' && children[i].className !== 'active item') {

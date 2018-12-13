@@ -12,7 +12,13 @@ module.exports = {
         rules: [{
             test: /\.css$/,
             loader: 'style-loader!css-loader'
+        }, {
+            test: /\.ts$/,
+            loader: 'awesome-typescript-loader'
         }]
+    },
+    resolve: {
+        extensions: ['.js', '.ts']
     },
     devtool: 'source-map',
     devServer: {

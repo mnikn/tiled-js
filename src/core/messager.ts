@@ -1,17 +1,15 @@
 export class Messager {
-    constructor() {
-        this._queue = [];
-    }
+    private _queue: any[] = [];
 
-    register(callback) {
+    register(callback: () => void) {
         this._queue.push(callback);
     }
 
-    unregister(callback) {
+    unregister(callback: () => void) {
         this._queue.splice(this._queue.indexOf(callback), 1);
     }
 
-    fire(args, thisEnv = this) {
+    fire(args: any, thisEnv: any = this) {
         this._queue.forEach(function (e) {
             e.apply(thisEnv, args);
         });

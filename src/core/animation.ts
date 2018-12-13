@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-const twinkleFrame = [{
+const twinkleFrame: any[] = [{
         stroke: 'black',
         strokeWidth: 2,
         strokeDasharray: 2
@@ -17,7 +17,7 @@ const twinkleFrame = [{
     }
 ];
 
-export function twinkle(element) {
+export function twinkle(element): Event {
     return element.animate(twinkleFrame, {
         duration: 1000,
         iterations: Infinity
