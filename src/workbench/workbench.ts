@@ -1,16 +1,11 @@
 declare let $;
 
-import { Grid } from './../core/grid';
-import * as d3 from 'd3';
 import * as Pickr from 'pickr-widget';
 
 import './workbench.css';
-import {
-    GridAPI
-} from '../core/grid';
-import {
-    TileService
-} from '../tile-service';
+import { GridAPI } from '../core/grid/api';
+import { Grid } from '../core/grid/grid';
+import { TileService } from '../tile-service';
 import { twinkle } from '../core/animation';
 
 export class Workbench extends HTMLElement {

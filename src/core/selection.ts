@@ -1,7 +1,5 @@
-import { Cell } from './grid';
-import {
-    Messager
-} from "./messager";
+import { Cell } from './grid/grid';
+import { Messager } from "./messager";
 import * as _ from 'lodash';
 
 export class Selection {

@@ -1,11 +1,8 @@
-import { Selection } from './../core/selection';
-import { Grid } from './../core/grid';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 
-import {
-    GridAPI
-} from '../core/grid';
+import { GridAPI } from '../core/grid/api';
+import { Grid } from '../core/grid/grid';
 import {
     RectangleSelection,
     SimpleSelection
