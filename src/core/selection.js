@@ -1,4 +1,6 @@
-import { Messager } from "./messager";
+import {
+    Messager
+} from "./messager";
 
 export class Selection {
     constructor() {
@@ -45,6 +47,10 @@ export class SimpleSelection extends Selection {
     get type() {
         return 'simple';
     }
+
+    static get type() {
+        return 'simple';
+    }
 }
 
 export class RectangleSelection extends Selection {
@@ -53,6 +59,14 @@ export class RectangleSelection extends Selection {
         super();
         this._startRect = null;
         this._endRect = null;
+    }
+
+    static get type() {
+        return 'rectangle';
+    }
+
+    get type() {
+        return 'rectangle';
     }
 
     get startRect() {
@@ -72,7 +86,14 @@ export class RectangleSelection extends Selection {
         super.fireSelectionChange(value);
     }
 
-    get type() {
-        return 'rectangle';
+    select(leftRow, rightRow, leftColumn, rightColumn, gridId) {
+        let rects = [];
+        _.range(leftRow, rightRow + 1).forEach(row => {
+            _.range(leftColumn, rightColumn + 1).forEach(column => {
+                let rect = document.querySelector(`#${gridId}-${row}-${column}`);
+                rects.push(rect);
+            });
+        });
+        return rects;
     }
 }

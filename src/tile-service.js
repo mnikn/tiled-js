@@ -5,13 +5,17 @@ export class EditMode {
     }
 }
 
-export class TileMode extends EditMode {
+export class FillMode extends EditMode {
     constructor() {
         super();
     }
 
     get type() {
-        return 'tile';
+        return 'fill';
+    }
+
+    static get type() {
+        return 'fill';
     }
 }
 
@@ -23,11 +27,15 @@ export class EraserMode extends EditMode {
     get type() {
         return 'eraser';
     }
+
+    static get type() {
+        return 'eraser';
+    }
 }
 
 export const editMode = Object.freeze({
-    eraser: new EraserMode().type,
-    tile: new TileMode().type
+    eraser: EraserMode.type,
+    fill: FillMode.type
 });
 
 let _editMode = new EditMode();
