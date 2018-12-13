@@ -14,13 +14,11 @@ module.exports = {
             loader: 'style-loader!css-loader'
         }]
     },
+    devtool: 'source-map',
     devServer: {
         contentBase: path.join(__dirname, 'dist'),
         compress: true
-    },
-    plugins: [
-        new webpack.SourceMapDevToolPlugin({})
-    ]
+    }
     // plugins: [
     //     new HtmlWebPackPlugin({
     //         template: "./index.html"
