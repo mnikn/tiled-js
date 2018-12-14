@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import * as d3 from 'd3';
 
 import {
     Messager
@@ -67,6 +66,10 @@ export class Grid {
 
     get columns() {
         return this._columns;
+    }
+
+    get cells() {
+        return this._cells;
     }
 
     public registerCellEvent(id: string, eventName: string, callback: (...args) => void): void {

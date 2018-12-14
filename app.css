@@ -1,7 +1,3 @@
-/* rect {
-    animation: rectTweaking infinite 1s linear;
-} */
-
 rect:hover {
     cursor: pointer;
     opacity: 0.5;

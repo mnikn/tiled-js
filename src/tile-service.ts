@@ -1,14 +1,26 @@
-import { Selection, SimpleSelection } from "./core/selection";
+import { Cell } from './core/grid/grid';
+import { Selection } from "./core/selection";
 
 export enum EditMode {
     none = -1,
-    fill = 1,
-    eraser
+    stampBrush = 1,
+    eraser,
+    shapeFill
 }
 
 export class TileService {
-    private static _selection: Selection = new SimpleSelection();
+    private static _cells: Cell[] = [];
+    private static _selection: Selection = new Selection();
     private static _editMode: EditMode = EditMode.none;
+
+    static get cells() {
+        return TileService._cells;
+    }
+
+    static set cells(value) {
+        this._cells = value;
+        this._selection.reset(this._cells);
+    }
 
     static get editMode() {
         return TileService._editMode;

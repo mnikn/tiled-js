@@ -2,6 +2,7 @@ import {
     TileService,
     EditMode
 } from '../tile-service';
+import { SelectionModes } from '../core/selection';
 
 export class Toolbar extends HTMLElement {
     constructor() {
@@ -11,8 +12,11 @@ export class Toolbar extends HTMLElement {
             <a id='eraser-btn' class="item">
                 <i class="eraser icon"></i> 
             </a>
-            <a id='fill-btn' class="item">
+            <a id='stamp-brush-btn' class="item">
                 <i class="pencil alternate icon"></i> 
+            </a>
+            <a id='shape-fill-btn' class="item">
+                <i class="square icon"></i> 
             </a>
         </div>
         `;
@@ -27,12 +31,25 @@ export class Toolbar extends HTMLElement {
                 }
             }
         });
-        document.querySelector('#fill-btn').addEventListener('click', e => {
-            TileService.editMode = TileService.editMode !== EditMode.fill ? EditMode.fill : EditMode.none;
+        document.querySelector('#stamp-brush-btn').addEventListener('click', e => {
+            TileService.editMode = TileService.editMode !== EditMode.stampBrush ? EditMode.stampBrush : EditMode.none;
             let children = document.querySelector('#tiled-toolbar').children;
             for(let i = 0;i < children.length; ++i) {
-                if (children[i].id === 'fill-btn' && children[i].className !== 'active item') {
+                if (children[i].id === 'stamp-brush-btn' && children[i].className !== 'active item') {
                     children[i].setAttribute('class', 'active item');
+                    TileService.selection.swtichSelectionMode(SelectionModes.single);
+                } else {
+                    children[i].setAttribute('class', 'item');
+                }
+            }
+        });
+        document.querySelector('#shape-fill-btn').addEventListener('click', e => {
+            TileService.editMode = TileService.editMode !== EditMode.shapeFill ? EditMode.shapeFill : EditMode.none;
+            let children = document.querySelector('#tiled-toolbar').children;
+            for(let i = 0;i < children.length; ++i) {
+                if (children[i].id === 'shape-fill-btn' && children[i].className !== 'active item') {
+                    children[i].setAttribute('class', 'active item');
+                    TileService.selection.swtichSelectionMode(SelectionModes.rectangle);
                 } else {
                     children[i].setAttribute('class', 'item');
                 }
