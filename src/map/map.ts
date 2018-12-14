@@ -23,12 +23,10 @@ export class Map extends HTMLElement {
             strokeColor: '#5B5B5B',
             strokeDasharray: ('1, 3')
         });
-        this.grid.registerGridEvent('mouseover', function (cellData) {
-            self.paintTile(cellData, this);
-        });
-        this.grid.registerGridEvent('mousedown', function (cellData) {
-            self.paintTile(cellData, this);
-        });
+
+        let paintTile = _.throttle(this.paintTile, 100);
+        this.grid.registerGridEvent('mouseover', (cell) => paintTile.call(self, cell, d3.event.buttons === 1));
+        this.grid.registerGridEvent('mousedown', (cell) => paintTile.call(self, cell, d3.event.buttons === 1));
         TileService.cells = this.grid.cells;
 
         this.createSelectionDropdown();
@@ -56,25 +54,44 @@ export class Map extends HTMLElement {
         this.appendChild(this._selectionDropdown);
     }
 
-    private paintTile(cellData, cellElement): void {
-        new Promise((resolve) => {
-            if (!TileService.editMode) return;
-            if (d3.event.buttons !== 1) return;
+    private paintTile(cellData, isMouseClicked): void {
+        if (!TileService.editMode) return;
+        if (!isMouseClicked) return;
+        // if (d3.event.buttons !== 1) return;
 
-            let cells = TileService.selection.select(cellData);
-            let cellElements = cells.map(e => document.querySelector(`#mapgrid-${e.row}-${e.column}`));
-            cellElements.forEach(e => {
-                switch(TileService.editMode) {
-                    case EditMode.eraser: 
-                        this.eraseTile(e);
-                        break;
-                    case EditMode.shapeFill:
-                    case EditMode.stampBrush:
-                        this.fillTile(e, TileService.selection.selectedTile);            
-                        break;
-                }
-            });
+        let cells = TileService.selection.select(cellData);
+        // let cellElements = cells.map(e => document.querySelector(`#mapgrid-${e.row}-${e.column}`));
+        let cellElements = cells.map(e => e.element);
+        cellElements.forEach(e => {
+            switch (TileService.editMode) {
+                case EditMode.eraser:
+                    this.eraseTile(e);
+                    break;
+                case EditMode.shapeFill:
+                case EditMode.stampBrush:
+                    this.fillTile(e, TileService.selection.selectedTile);
+                    break;
+            }
         });
+        // new Promise((resolve) => {
+        //     if (!TileService.editMode) return;
+        //     if (d3.event.buttons !== 1) return;
+
+        //     let cells = TileService.selection.select(cellData);
+        //     // let cellElements = cells.map(e => document.querySelector(`#mapgrid-${e.row}-${e.column}`));
+        //     let cellElements = cells.map(e => e.element);
+        //     cellElements.forEach(e => {
+        //         switch(TileService.editMode) {
+        //             case EditMode.eraser: 
+        //                 this.eraseTile(e);
+        //                 break;
+        //             case EditMode.shapeFill:
+        //             case EditMode.stampBrush:
+        //                 this.fillTile(e, TileService.selection.selectedTile);            
+        //                 break;
+        //         }
+        //     });
+        // });
         // switch(TileService.editMode) {
         //     case EditMode.eraser: 
         //         cellElements.forEach(e => this.eraseTile(e));
@@ -149,8 +166,9 @@ export class Map extends HTMLElement {
         }
     }
 
-    private eraseTile(rectElement): void {
+    private eraseTile(rectElement: HTMLElement): void {
         while (rectElement.childElementCount > 1) {
+            // rectElement.removeChild()
             rectElement.removeChild(rectElement.lastChild);
         }
     }

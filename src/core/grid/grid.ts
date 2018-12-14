@@ -12,7 +12,8 @@ export interface Cell {
     y: number,
     height: number
     width: number,
-    events: Messager[]
+    events: Messager[],
+    element: HTMLElement
 }
 
 export class Grid {

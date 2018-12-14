@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as d3 from 'd3';
 
 
-import { Grid } from './grid';
+import { Grid, Cell } from './grid';
 
 export interface GridRenderOptions {
     id: string;
@@ -91,6 +91,10 @@ export class GridAPI {
             .attr("height", '100%')
             .style("fill", fillColor);
         cells = rows.selectAll('svg');
+        cells.each(function (d: Cell) {
+            let element: any = this;
+            d.element = element;
+        });
         customFn.call(this, grid, cells);
         cells.on('click', function (d) {
             grid.fireCellEvent(d.id, 'click', [d], this);
@@ -99,6 +103,7 @@ export class GridAPI {
         }).on('mouseover', function (d) {
             grid.fireCellEvent(d.id, 'mouseover', [d], this);
         });
+        grid.updateGrid();
     }
 
     static getGrid(id: string): Grid {
