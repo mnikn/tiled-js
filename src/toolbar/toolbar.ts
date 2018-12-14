@@ -15,9 +15,6 @@ export class Toolbar extends HTMLElement {
             <a id='stamp-brush-btn' class="item">
                 <i class="pencil alternate icon"></i> 
             </a>
-            <a id='shape-fill-btn' class="item">
-                <i class="square icon"></i> 
-            </a>
         </div>
         `;
         document.querySelector('#eraser-btn').addEventListener('click', e => {
@@ -37,19 +34,7 @@ export class Toolbar extends HTMLElement {
             for(let i = 0;i < children.length; ++i) {
                 if (children[i].id === 'stamp-brush-btn' && children[i].className !== 'active item') {
                     children[i].setAttribute('class', 'active item');
-                    TileService.selection.swtichSelectionMode(SelectionModes.single);
-                } else {
-                    children[i].setAttribute('class', 'item');
-                }
-            }
-        });
-        document.querySelector('#shape-fill-btn').addEventListener('click', e => {
-            TileService.editMode = TileService.editMode !== EditMode.shapeFill ? EditMode.shapeFill : EditMode.none;
-            let children = document.querySelector('#tiled-toolbar').children;
-            for(let i = 0;i < children.length; ++i) {
-                if (children[i].id === 'shape-fill-btn' && children[i].className !== 'active item') {
-                    children[i].setAttribute('class', 'active item');
-                    TileService.selection.swtichSelectionMode(SelectionModes.rectangle);
+                    // TileService.selection.swtichSelectionMode(SelectionModes.single);
                 } else {
                     children[i].setAttribute('class', 'item');
                 }
