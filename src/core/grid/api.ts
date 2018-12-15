@@ -40,7 +40,7 @@ export class GridAPI {
                     y: ypos,
                     height: cellHeight,
                     width: cellWidth,
-                    id: xpos + ypos
+                    id: `${i}-${j}`
                 });
                 xpos += cellWidth;
             }
@@ -96,13 +96,6 @@ export class GridAPI {
             d.element = element;
         });
         customFn.call(this, grid, cells);
-        cells.on('click', function (d) {
-            grid.fireCellEvent(d.id, 'click', [d], this);
-        }).on('mousedown', function (d) {
-            grid.fireCellEvent(d.id, 'mousedown', [d], this);
-        }).on('mouseover', function (d) {
-            grid.fireCellEvent(d.id, 'mouseover', [d], this);
-        });
         grid.updateGrid();
     }
 

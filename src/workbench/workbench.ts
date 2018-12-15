@@ -1,3 +1,4 @@
+import { Cell } from './../core/grid/grid';
 declare let $;
 
 import * as Pickr from 'pickr-widget';
@@ -7,6 +8,7 @@ import { GridAPI } from '../core/grid/api';
 import { Grid } from '../core/grid/grid';
 import { TileService } from '../tile-service';
 import { twinkle } from '../core/animation';
+import { timingSafeEqual } from 'crypto';
 
 export class Workbench extends HTMLElement {
     private _customTextTileText = 'W';
@@ -143,12 +145,8 @@ export class Workbench extends HTMLElement {
                 .style("fill", () => colors[colorIndex++]);
                 // .style("stroke-width", '0');
         });
-        this.grid.registerGridEvent('click', function () {
-            if (self._twinkleAnimate) {
-                self._twinkleAnimate.cancel();
-            }
-            TileService.selection.selectedTile = this;
-            self._twinkleAnimate = twinkle(this);
+        this.grid.registerGridEvent('click', (e, cell) => {
+            this.selectTile(cell);
         });
     }
 
@@ -175,14 +173,17 @@ export class Workbench extends HTMLElement {
                 .attr("y", '60%')
                 .text(() => texts[textIndex++]);
         });
-        let self = this;
-        this.grid.registerGridEvent('click', function () {
-            if (self._twinkleAnimate) {
-                self._twinkleAnimate.cancel();
-            }
-            TileService.selection.selectedTile = this;
-            self._twinkleAnimate = twinkle(this);
+        this.grid.registerGridEvent('click', (e, cell) => {
+            this.selectTile(cell);
         });
+    }
+
+    private selectTile(cell: Cell): void {
+        if (this._twinkleAnimate) {
+            this._twinkleAnimate.cancel();
+        }
+        TileService.selection.selectedTile = cell.element;
+        this._twinkleAnimate = twinkle(cell.element);
     }
 }
 

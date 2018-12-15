@@ -73,7 +73,7 @@ export class Grid {
         return this._cells;
     }
 
-    public registerCellEvent(id: string, eventName: string, callback: (...args) => void): void {
+    public registerCellEvent(id: string, eventName: string, callback: (...args) => void): Grid {
         let cell = this._cells.find(e => e.id === id);
         if (!cell) return;
         let event = cell.events[eventName];
@@ -82,17 +82,26 @@ export class Grid {
         }
         event.register(callback);
         cell.events[eventName] = event;
+        cell.element.addEventListener(eventName, (...args) => {
+            this.fireCellEvent(id, eventName, args);
+        });
+        return this;
     }
 
-    public registerGridEvent(eventName: string, callback: (...args) => void): void {
-        this._cells.forEach(function (cell) {
+    public registerGridEvent(eventName: string, callback: (...args) => void): Grid {
+        let self = this;
+        this._cells.forEach((cell) => {
             let event = cell.events[eventName];
             if (!event) {
                 event = new Messager();
             }
             event.register(callback);
             cell.events[eventName] = event;
+            cell.element.addEventListener(eventName, (...args) => {
+                self.fireCellEvent(cell.id, eventName, args);
+            });
         });
+        return this;
     }
 
     public fireCellEvent(id: string, eventName: string, args: any, thisEnv: any = this): void {
@@ -100,7 +109,7 @@ export class Grid {
         if (!cell) return;
         let event = cell.events[eventName];
         if (!event) return;
-        event.fire(args, thisEnv);
+        event.fire(_.concat(args, cell), thisEnv);
     }
 
     public fireGridEvent(eventName: string, args: any, thisEnv: any = this): void {

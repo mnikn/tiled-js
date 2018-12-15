@@ -1,3 +1,4 @@
+import { Cell } from './../core/grid/grid';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 
@@ -24,9 +25,11 @@ export class Map extends HTMLElement {
             strokeDasharray: ('1, 3')
         });
 
-        let paintTile = _.throttle(this.paintTile, 100);
-        this.grid.registerGridEvent('mouseover', (cell) => paintTile.call(self, cell, d3.event.buttons === 1));
-        this.grid.registerGridEvent('mousedown', (cell) => paintTile.call(self, cell, d3.event.buttons === 1));
+
+        let paintTile = (e, cell) => this.paintTile(cell, e.buttons === 1);
+        this.grid
+            .registerGridEvent('mousedown', paintTile)
+            .registerGridEvent('mousemove', paintTile);
         TileService.cells = this.grid.cells;
 
         this.createSelectionDropdown();
@@ -54,13 +57,11 @@ export class Map extends HTMLElement {
         this.appendChild(this._selectionDropdown);
     }
 
-    private paintTile(cellData, isMouseClicked): void {
+    private paintTile(cell: Cell, isMouseClicked: boolean): void {
         if (!TileService.editMode) return;
         if (!isMouseClicked) return;
-        // if (d3.event.buttons !== 1) return;
 
-        let cells = TileService.selection.select(cellData);
-        // let cellElements = cells.map(e => document.querySelector(`#mapgrid-${e.row}-${e.column}`));
+        let cells = TileService.selection.select(cell);
         let cellElements = cells.map(e => e.element);
         cellElements.forEach(e => {
             switch (TileService.editMode) {
@@ -73,103 +74,19 @@ export class Map extends HTMLElement {
                     break;
             }
         });
-        // new Promise((resolve) => {
-        //     if (!TileService.editMode) return;
-        //     if (d3.event.buttons !== 1) return;
-
-        //     let cells = TileService.selection.select(cellData);
-        //     // let cellElements = cells.map(e => document.querySelector(`#mapgrid-${e.row}-${e.column}`));
-        //     let cellElements = cells.map(e => e.element);
-        //     cellElements.forEach(e => {
-        //         switch(TileService.editMode) {
-        //             case EditMode.eraser: 
-        //                 this.eraseTile(e);
-        //                 break;
-        //             case EditMode.shapeFill:
-        //             case EditMode.stampBrush:
-        //                 this.fillTile(e, TileService.selection.selectedTile);            
-        //                 break;
-        //         }
-        //     });
-        // });
-        // switch(TileService.editMode) {
-        //     case EditMode.eraser: 
-        //         cellElements.forEach(e => this.eraseTile(e));
-        //         break;
-        //     case EditMode.fill:
-        //         cellElements.forEach(e => this.fillTile(e, selectedTile));
-        //         break;
-        // }
-
-        // let selectedTile = TileService.selection.selectedTile;
-
-        // if (d3.event.shiftKey) {
-        //     if (TileService.selection.type === 'simple') {
-        //         let selection = new RectangleSelection();
-        //         selection.selectedTile = selectedTile;
-        //         selection.startRect = cellData;
-        //         TileService.selection = selection;
-        //         return;
-        //     } else if (TileService.selection instanceof RectangleSelection && !TileService.selection.startRect) {
-        //         TileService.selection.startRect = cellData;
-        //         this._twinkleAnimation = twinkle(cellElement);
-        //         return;
-        //     }
-        // } else {
-        //     if (!(TileService.selection instanceof SimpleSelection)) {
-        //         TileService.selection = new SimpleSelection();
-        //         TileService.selection.selectedTile = selectedTile;
-        //     }
-        //     (<SimpleSelection>TileService.selection).selectedRect = cellData;
-        // }
-
-        // if (this._twinkleAnimation) {
-        //     this._twinkleAnimation.cancel();
-        // }
-        // if (d3.event.shiftKey && TileService.selection instanceof RectangleSelection && TileService.selection.startRect) {
-        //     let endRect = cellData;
-        //     let startRect = TileService.selection.startRect;
-        //     let rects = TileService.selection.select(
-        //         Math.min(startRect.row, endRect.row),
-        //         Math.max(startRect.row, endRect.row),
-        //         Math.min(startRect.column, endRect.column),
-        //         Math.max(startRect.column, endRect.column),
-        //         'mapgrid');
-        //     switch (TileService.editMode) {
-        //         case EditMode.fill:
-        //             if (!selectedTile) break;
-        //             rects.forEach(e => this.fillTile(e, selectedTile));
-        //             break;
-        //         case EditMode.eraser:
-        //             rects.forEach(e => this.eraseTile(e));
-        //             break;
-        //     }
-        //     TileService.selection.startRect = null;
-        // } else {
-        //     switch (TileService.editMode) {
-        //         case EditMode.fill:
-        //             if (!selectedTile) break;
-        //             this.fillTile(cellElement, selectedTile);
-        //             break;
-        //         case EditMode.eraser:
-        //             this.eraseTile(cellElement);
-        //             break;
-        //     }
-        // }
     }
 
-    private fillTile(rectElement, selectedTile): void {
-        this.eraseTile(rectElement);
+    private fillTile(cellElement: HTMLElement, selectedTile: HTMLElement): void {
+        this.eraseTile(cellElement);
         for (let i = 1; i < selectedTile.children.length; ++i) {
             let node = selectedTile.children[i].cloneNode(true);
-            rectElement.appendChild(node);
+            cellElement.appendChild(node);
         }
     }
 
-    private eraseTile(rectElement: HTMLElement): void {
-        while (rectElement.childElementCount > 1) {
-            // rectElement.removeChild()
-            rectElement.removeChild(rectElement.lastChild);
+    private eraseTile(cellElement: HTMLElement): void {
+        while (cellElement.childElementCount > 1) {
+            cellElement.removeChild(cellElement.lastChild);
         }
     }
 }
